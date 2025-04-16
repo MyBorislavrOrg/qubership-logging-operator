@@ -65,6 +65,8 @@ jobs:
         echo "platforms=${platforms}" >> $GITHUB_OUTPUT
 
   change-chart:
+    permissions:
+      contents: write
     needs: [check-tag]
     runs-on: ubuntu-latest
     steps:
@@ -88,6 +90,9 @@ jobs:
         tag-name: v${{ github.event.inputs.version }}
 
   docker-build:
+    permissions:
+      contents: write
+      packages: write
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -104,7 +109,6 @@ jobs:
           dry-run: ${{ inputs.dry-run }}
           component: ${{ toJson(matrix.component) }}
           platforms: ${{ needs.load-docker-build-components.outputs.platforms }}
-
 
   github-release:
     needs: [docker-build]
