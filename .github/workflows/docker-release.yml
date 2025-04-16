@@ -22,7 +22,7 @@ jobs:
     steps:
     - name: Check if tag exists
       id: check_tag
-      uses: netcracker/qubership-workflow-hub/actions/tag-action@main
+      uses: netcracker/qubership-workflow-hub/actions/tag-action@fix/tag-action
       with:
         ref: ${{ github.ref }}
         check-tag: 'true'
