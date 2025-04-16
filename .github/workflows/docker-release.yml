@@ -1,5 +1,5 @@
 name: Logging Operator Release
-
+run-name: "Logging Operator Release ${{ inputs.version }}"
 on:
   workflow_dispatch:
     inputs:
@@ -109,7 +109,8 @@ jobs:
           dry-run: ${{ inputs.dry-run }}
           component: ${{ toJson(matrix.component) }}
           platforms: ${{ needs.load-docker-build-components.outputs.platforms }}
-
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
   github-release:
     needs: [docker-build]
     uses: netcracker/qubership-workflow-hub/.github/workflows/release-drafter.yml@main
