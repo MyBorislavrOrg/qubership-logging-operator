@@ -47,8 +47,8 @@ jobs:
         fetch-depth: 0
     - name: "Apply common linters configuration"
       run: |
-        ls -ls ../super-linter-common-configs
-        ls -la ../super-linter-common-configs/.github
+        ls -ls ./super-linter-common-configs
+        ls -la ./super-linter-common-configs/.github
         pwd
         ls -la .
         mkdir -p .github/linters
