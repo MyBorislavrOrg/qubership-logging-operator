@@ -47,9 +47,11 @@ jobs:
         fetch-depth: 0
     - name: "Apply common linters configuration"
       run: |
+        ls -ls ~/
+        ls -la ~/.github
         mkdir -p .github/linters
-        cp -nR ~/.github/linters/* ./.github/linters
-        cp -n ~/.github/super-linter.env ./.github
+        cp --update=none -R ~/.github/linters ./.github
+        cp --update=none ~/.github/super-linter.env ./.github
     - name: "Load super-linter environment file"
       run: |
         # shellcheck disable=2086
