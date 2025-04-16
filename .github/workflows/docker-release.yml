@@ -95,7 +95,7 @@ jobs:
       packages: write
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         component: ${{ fromJson(needs.load-docker-build-components.outputs.component) }}
     needs: [change-chart, load-docker-build-components]
