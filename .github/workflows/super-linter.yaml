@@ -30,12 +30,26 @@ jobs:
       # To report GitHub Actions status checks
       statuses: write
     steps:
+    - name: "Get the common linters configuration"
+      uses: actions/checkout@v4
+      with:
+        ref: main
+        path: ~/
+        repository: netcracker/.github
+        sparse-checkout: |
+          .github/linters
+          .github/super-linter.env
+        
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         # Full git history is needed to get a proper list of changed files within `super-linter`
         fetch-depth: 0
-
+    - name: "Apply common linters configuration"
+      run: |
+        mkdir -p .github/linters
+        cp -nR ~/.github/linters/* ./.github/linters
+        cp -n ~/.github/super-linter.env ./.github
     - name: "Load super-linter environment file"
       run: |
         # shellcheck disable=2086
