@@ -34,7 +34,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         ref: main
-        path: ~/
+        path: super-linter-common-configs
         repository: netcracker/.github
         sparse-checkout: |
           .github/linters
@@ -47,11 +47,13 @@ jobs:
         fetch-depth: 0
     - name: "Apply common linters configuration"
       run: |
-        ls -ls ~/
-        ls -la ~/.github
+        ls -ls ../super-linter-common-configs
+        ls -la ../super-linter-common-configs/.github
+        pwd
+        ls -la .
         mkdir -p .github/linters
-        cp --update=none -R ~/.github/linters ./.github
-        cp --update=none ~/.github/super-linter.env ./.github
+        cp --update=none -R super-linter-common-configs/.github/linters ./.github
+        cp --update=none super-linter-common-configs/.github/super-linter.env ./.github
     - name: "Load super-linter environment file"
       run: |
         # shellcheck disable=2086
