@@ -45,21 +45,32 @@ jobs:
       with:
         # Full git history is needed to get a proper list of changed files within `super-linter`
         fetch-depth: 0
+        path: ./code-to-lint
     - name: "Apply common linters configuration"
+      shell: bash
       run: |
         pwd
         ls -la .
         ls -la ./super-linter-common-configs
         ls -la ./super-linter-common-configs/.github
-        mkdir -p .github/linters
-        cp --update=none -R super-linter-common-configs/.github/linters ./.github
-        cp --update=none super-linter-common-configs/.github/super-linter.env ./.github
+        if [ -d ./code-to-lint/.github/linters ]; then
+          echo "❕ Found local linter configuration files. Applying."
+          cp -fR ./code-to-lint/.github/linters ./super-linter-common-configs/.github
+        fi
+
     - name: "Load super-linter environment file"
+      shell: bash
       run: |
         # shellcheck disable=2086
-        if [ -f "./.github/super-linter.env" ]; then
-          grep "\S" ./.github/super-linter.env | grep -v "^#"
-          grep "\S" ./.github/super-linter.env | grep -v "^#" >> $GITHUB_ENV
+        if [ -f "./super-linter-common-configs/.github/super-linter.env" ]; then
+          echo "❕ Applying common linter environment:"
+          grep "\S" ./super-linter-common-configs/.github/super-linter.env | grep -v "^#"
+          grep "\S" ./super-linter-common-configs/.github/super-linter.env | grep -v "^#" >> $GITHUB_ENV
+        fi
+        if [ -f "./code-to-lint/.github/super-linter.env" ]; then
+          echo "❕ Applying local linter environment:"
+          grep "\S" ./code-to-lint/.github/super-linter.env | grep -v "^#"
+          grep "\S" ./code-to-lint/.github/super-linter.env | grep -v "^#" >> $GITHUB_ENV
         fi
 
     - name: Lint Code Base
@@ -69,3 +80,5 @@ jobs:
         DEFAULT_BRANCH: "main"
         # To report GitHub Actions status checks
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DEFAULT_WORKSPACE: ./code-to-lint
+        LINTER_RULES_PATH: super-linter-common-configs/.github/linters
