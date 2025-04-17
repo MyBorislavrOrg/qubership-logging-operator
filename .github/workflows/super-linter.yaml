@@ -33,6 +33,10 @@ jobs:
         sparse-checkout: |
           .github/linters
           .github/super-linter.env
+    - name: "Debug"
+      run: |
+        pwd
+        ls -laR .
     - name: "Upload the common linters configsuration"
       uses: actions/upload-artifact@v4
       with:
