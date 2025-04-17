@@ -19,16 +19,11 @@ on:
         description: "Lint all codebase"
 
 # Don't grant any access by default
-permissions: {}
+# permissions: {}
 
 jobs:
-  run-lint:
+  prepare-configs:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-      # To report GitHub Actions status checks
-      statuses: write
     steps:
     - name: "Get the common linters configuration"
       uses: actions/checkout@v4
@@ -39,38 +34,48 @@ jobs:
         sparse-checkout: |
           .github/linters
           .github/super-linter.env
-        
+    - name: "Upload the common linters configsuration"
+      uses: actions/upload-artifact@v4
+      with:
+        name: linter-config
+        path: "**/.github"
+  run-lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      # To report GitHub Actions status checks
+      statuses: write
+    steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         # Full git history is needed to get a proper list of changed files within `super-linter`
         fetch-depth: 0
         path: code-to-lint
-    - name: "Apply local linters configuration"
-      shell: bash
+    - name: "Get the common linters configuration"
+      uses: actions/download-artifact@v4
+      with:
+        name: linter-config
+        path: /tmp/linter-config
+    - name: "Apply the common linters configuration"
       run: |
-        pwd
-        ls -la .
-        ls -la ${GITHUB_WORKSPACE}/super-linter-common-configs
-        ls -la ${GITHUB_WORKSPACE}/super-linter-common-configs/.github
-        if [ -d ${GITHUB_WORKSPACE}/code-to-lint/.github/linters ]; then
-          echo "❕ Found local linter configuration files. Applying."
-          cp -fR ${GITHUB_WORKSPACE}/code-to-lint/.github/linters ${GITHUB_WORKSPACE}/super-linter-common-configs/.github
-        fi
+        ls -la /tmp/linter-config
+        cp --update=none -R /tmp/linter-config/.github/* ./.github
 
     - name: "Load super-linter environment file"
       shell: bash
       run: |
         # shellcheck disable=2086
-        if [ -f "${GITHUB_WORKSPACE}/super-linter-common-configs/.github/super-linter.env" ]; then
+        if [ -f "/tmp/linter-config/.github/super-linter.env" ]; then
           echo "❕ Applying common linter environment:"
-          grep "\S" ${GITHUB_WORKSPACE}/super-linter-common-configs/.github/super-linter.env | grep -v "^#"
-          grep "\S" ${GITHUB_WORKSPACE}/super-linter-common-configs/.github/super-linter.env | grep -v "^#" >> $GITHUB_ENV
+          grep "\S" /tmp/linter-config/.github/super-linter.env | grep -v "^#"
+          grep "\S" /tmp/linter-config/.github/super-linter.env | grep -v "^#" >> $GITHUB_ENV
         fi
-        if [ -f "${GITHUB_WORKSPACE}/code-to-lint/.github/super-linter.env" ]; then
+        if [ -f "${GITHUB_WORKSPACE}/.github/super-linter.env" ]; then
           echo "❕ Applying local linter environment:"
-          grep "\S" ${GITHUB_WORKSPACE}/code-to-lint/.github/super-linter.env | grep -v "^#"
-          grep "\S" ${GITHUB_WORKSPACE}/code-to-lint/.github/super-linter.env | grep -v "^#" >> $GITHUB_ENV
+          grep "\S" ${GITHUB_WORKSPACE}/.github/super-linter.env | grep -v "^#"
+          grep "\S" ${GITHUB_WORKSPACE}/.github/super-linter.env | grep -v "^#" >> $GITHUB_ENV
         fi
 
     - name: Lint Code Base
@@ -80,5 +85,5 @@ jobs:
         DEFAULT_BRANCH: "main"
         # To report GitHub Actions status checks
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        DEFAULT_WORKSPACE: ${{ github.workspace }}/code-to-lint
-        LINTER_RULES_PATH: ${{ github.workspace }}/super-linter-common-configs/.github/linters
+#        DEFAULT_WORKSPACE: ${{ github.workspace }}/code-to-lint
+#        LINTER_RULES_PATH: ${{ github.workspace }}/super-linter-common-configs/.github/linters
