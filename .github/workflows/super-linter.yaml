@@ -73,7 +73,7 @@ jobs:
       shell: bash
       run: |
         # shellcheck disable=2086
-        if [ -f "/tmp/linter-config/.github/super-linter.env" ]; then
+        if [ -f "/tmp/linter-config/super-linter.env" ]; then
           echo "❕ Applying common linter environment:"
           grep "\S" /tmp/linter-config/super-linter.env | grep -v "^#"
           grep "\S" /tmp/linter-config/super-linter.env | grep -v "^#" >> $GITHUB_ENV
