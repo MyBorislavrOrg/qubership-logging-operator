@@ -67,7 +67,8 @@ jobs:
       if: ${{ steps.download.outputs.download-path != '' }}
       run: |
         ls -la /tmp/linter-config
-        cp --update=none -R /tmp/linter-config/* ./.github
+        cp --update=none -vR /tmp/linter-config/* ./.github
+        ls -laR ./.github
 
     - name: "Load super-linter environment file"
       shell: bash
