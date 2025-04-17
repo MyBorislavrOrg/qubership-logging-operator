@@ -80,5 +80,5 @@ jobs:
         DEFAULT_BRANCH: "main"
         # To report GitHub Actions status checks
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        DEFAULT_WORKSPACE: ${GITHUB_WORKSPACE}/code-to-lint
-        LINTER_RULES_PATH: ${GITHUB_WORKSPACE}/super-linter-common-configs/.github/linters
+        DEFAULT_WORKSPACE: ${{ github.workspace }}/code-to-lint
+        LINTER_RULES_PATH: ${{ github.workspace }}/super-linter-common-configs/.github/linters
