@@ -45,7 +45,7 @@ jobs:
       with:
         # Full git history is needed to get a proper list of changed files within `super-linter`
         fetch-depth: 0
-        path: ${GITHUB_WORKSPACE}/code-to-lint
+        path: code-to-lint
     - name: "Apply local linters configuration"
       shell: bash
       run: |
