@@ -75,8 +75,8 @@ jobs:
         # shellcheck disable=2086
         if [ -f "/tmp/linter-config/.github/super-linter.env" ]; then
           echo "❕ Applying common linter environment:"
-          grep "\S" /tmp/linter-config/.github/super-linter.env | grep -v "^#"
-          grep "\S" /tmp/linter-config/.github/super-linter.env | grep -v "^#" >> $GITHUB_ENV
+          grep "\S" /tmp/linter-config/super-linter.env | grep -v "^#"
+          grep "\S" /tmp/linter-config/super-linter.env | grep -v "^#" >> $GITHUB_ENV
         fi
         if [ -f "${GITHUB_WORKSPACE}/.github/super-linter.env" ]; then
           echo "❕ Applying local linter environment:"
