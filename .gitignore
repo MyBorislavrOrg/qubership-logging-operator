@@ -1,12 +1,7 @@
-# Temporary Build Files
-/build/
-
-# VisualStudioCode
-.vscode/
-
-.idea/
-*.iml
-
-# Python
-venv/
-.mypy_cache/
+.vscode
+.idea
+node_modules
+.DS_Store
+dist
+coverage
+.env
